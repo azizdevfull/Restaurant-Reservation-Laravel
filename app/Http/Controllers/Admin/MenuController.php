@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Menu;
-use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
+use App\Models\Category;
+use App\Models\Menu;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
@@ -42,7 +42,8 @@ class MenuController extends Controller
     public function store(MenuStoreRequest $request)
     {
         $image = $request->file('image')->store('public/menus');
-       $menu = Menu::create([
+
+        $menu = Menu::create([
             'name' => $request->name,
             'description' => $request->description,
             'image' => $image,
@@ -56,16 +57,6 @@ class MenuController extends Controller
         return to_route('admin.menus.index')->with('success', 'Menu created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -76,7 +67,7 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $categories = Category::all();
-        return view('admin.menus.edit', compact('menu','categories'));
+        return view('admin.menus.edit', compact('menu', 'categories'));
     }
 
     /**
@@ -91,7 +82,7 @@ class MenuController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'price' => 'required',
+            'price' => 'required'
         ]);
         $image = $menu->image;
         if ($request->hasFile('image')) {
@@ -103,16 +94,13 @@ class MenuController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'image' => $image,
-            'price' => $request->price,
+            'price' => $request->price
         ]);
-    
 
         if ($request->has('categories')) {
             $menu->categories()->sync($request->categories);
         }
-
-
-        return to_route('admin.menus.index');
+        return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
     }
 
     /**

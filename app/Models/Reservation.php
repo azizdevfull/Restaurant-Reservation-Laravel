@@ -19,6 +19,9 @@ class Reservation extends Model
         'res_date',
         'guest_number'
     ];
+    protected $dates = [
+        'res_date'
+    ];
 
     public function table()
     {

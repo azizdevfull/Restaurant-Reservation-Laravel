@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Table;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TableStoreRequest;
+use App\Models\Table;
+use Illuminate\Http\Request;
+
+use function Ramsey\Uuid\v1;
 
 class TableController extends Controller
 {
@@ -42,9 +44,10 @@ class TableController extends Controller
             'name' => $request->name,
             'guest_number' => $request->guest_number,
             'status' => $request->status,
-            'location' => $request->location
+            'location' => $request->location,
         ]);
-        return to_route('admin.tables.index');
+
+        return to_route('admin.tables.index')->with('success', 'Table created successfully.');
     }
 
     /**
@@ -66,7 +69,7 @@ class TableController extends Controller
      */
     public function edit(Table $table)
     {
-        return view('admin.tables.edit',compact('table'));
+        return view('admin.tables.edit', compact('table'));
     }
 
     /**
@@ -80,7 +83,7 @@ class TableController extends Controller
     {
         $table->update($request->validated());
 
-        return to_route('admin.tables.index');
+        return to_route('admin.tables.index')->with('success', 'Table updated successfully.');
     }
 
     /**
@@ -91,8 +94,9 @@ class TableController extends Controller
      */
     public function destroy(Table $table)
     {
+        $table->reservations()->delete();
         $table->delete();
 
-        return to_route('admin.tables.index');
+        return to_route('admin.tables.index')->with('danger', 'Table daleted successfully.');
     }
 }
